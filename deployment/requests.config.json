@@ -1,0 +1,22 @@
+[
+    {
+        "config": {
+            "frequency": "4W",
+            "last": null,
+            "enabled": true
+        },
+        "request": {
+            "request_text": "Testing. Please ignore this request"
+        },
+        "requester": {
+            "address": "",
+            "city": "Orlando",
+            "company": "Code for Orlando",
+            "email": "michael@mdupont.com",
+            "name": "Michael duPont",
+            "phone_number": "4075958589",
+            "state": "Florida",
+            "zipcode": "32803"
+        }
+    }
+]
