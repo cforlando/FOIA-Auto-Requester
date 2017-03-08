@@ -15,7 +15,7 @@ This project uses Python running inside an AWS Lambda function. Production setti
 
 ## Project Details
 
-This script works by making POST requests to [NextRequest](https://www.nextrequest.com/) based on config data from a local JSON file. The JSON file follows this template: 
+This script works by making POST requests to [NextRequest](https://www.nextrequest.com/) based on config data from a JSON file. The JSON file follows this template: 
 
 ```json
 [
@@ -49,7 +49,7 @@ JSON Configs:
 * last: The datetime string representing the most recent request. UTC POSIX format (%Y-%m-%dT%H:%M:%S.%f). If null (recommended initial value), the request will be made.
 * enabled: Enable or disable a given request
 
-There is also a global TESTING flag at the top of the Python script to negate all enabled flags when True. Code will execute everything except the POST request and act as though it was successful
+There is also a global TESTING flag at the top of the Python script to negate all enabled flags when True. Code will read config data locally, execute everything except the POST request, and act as though it was successful.
 
 ## Install
 
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 ## Running
 
-Double check that TESTING by set to True before running locally. If TESTING is set to True, the script should fail because it lacks AWS credentials to fetch the S3 configs.
+Double check that TESTING is set to True before running locally. If TESTING is set to False, the script should fail because it lacks AWS credentials to fetch the S3 configs.
 
 ```
 python foiareq.py
@@ -82,6 +82,8 @@ pip2 install -r requirements.txt -t deployment/
 3. Compress the deployment folder into a zip file
 
 Once that is done, you upload the zip file to AWS Lambda and check that the daily trigger is still enabled.
+
+You will also need to create an S3 Bucket to read the production config file from. The name of the bucket and file are stored as S3\_BUCKET and S3\_KEY at the top of the code.
 
 ## Contributing
 
