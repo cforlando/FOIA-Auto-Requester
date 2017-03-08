@@ -1,16 +1,20 @@
-#!/bin/python2
+#!/bin/python3
+# -*- coding: utf-8 -*-
 
 """
 Michael duPont
 michael@mdupont.com
 """
 
+# pylint: disable=W0603
+
 from datetime import datetime, timedelta
 from json import dump, dumps, load
 from requests import Session
 
 ORL_POST_URL = 'https://orlando.nextrequest.com/requests'
-CONFIG_PATH = 'request.config.json'
+CONFIG_PATH = 'requests.config.json'
+S3_KEY = 'requests.config.json'
 
 TESTING = True
 
@@ -42,8 +46,8 @@ class FOIARequest:
 
     def add_config_data(self, pkey, values):
         """Adds formatted key-value pairs to the data dict"""
-        for k, v in values.iteritems():
-            self.data['{}[{}]'.format(pkey, k)] = v.replace(' ', '+')
+        for key, val in values.iteritems():
+            self.data['{}[{}]'.format(pkey, key)] = val.replace(' ', '+')
 
     def make_request(self):
         """returns whether it was made or not"""
@@ -67,18 +71,42 @@ def time_elapsed(freq, last):
     last = datetime.strptime(last, '%Y-%m-%dT%H:%M:%S.%f')
     return datetime.utcnow() - last > tdelta
 
-def main():
-    configs = load(open(CONFIG_PATH))
+def get_bucket(name):
+    """Fetch an S3 Bucket object with a given name"""
+    import boto3
+    bucket = boto3.resource('s3').Bucket(name)
+    return bucket
+
+def get_config():
+    """Returns config dict from local when testing or S3 in production"""
+    if not TESTING:
+        global CONFIG_PATH
+        CONFIG_PATH = '/tmp/' + CONFIG_PATH.split('/')[-1]
+        bucket = get_bucket('cfo-config')
+        bucket.download_file(S3_KEY, CONFIG_PATH)
+    return load(open(CONFIG_PATH))
+
+def save_config(data):
+    """Saves the updated config dict to local file or S3"""
+    dump(data, open(CONFIG_PATH, 'w'), indent=4, sort_keys=True)
+    if not TESTING:
+        bucket = get_bucket('cfo-config')
+        bucket.uploadload_file(CONFIG_PATH, S3_KEY)
+
+def main(event, context):
+    """Main function to load, handle, and update request data"""
+    configs = get_config()
     for i, config in enumerate(configs):
         #Skip if not enabled
         if not config['config']['enabled']:
+            print('Skipping disabled request')
             continue
         #Only make the request if the last datetime has exceed the desired frequency
         if time_elapsed(config['config']['frequency'], config['config']['last']):
             req = FOIARequest(config)
             req.make_request()
             configs[i]['config']['last'] = datetime.utcnow().isoformat()
-    dump(configs, open(CONFIG_PATH, 'w'), indent=4, sort_keys=True)
+    save_config(configs)
 
 if __name__ == '__main__':
-    main()
+    main(None, None)
