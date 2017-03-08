@@ -11,7 +11,7 @@ Michael duPont (@mdupont)
 
 This project is supposed to automate FOIA (Freedom of Information Act) requests that occur on on a regular basis. In addition to simplifying the requester's job, it has the added benefit of surfacing particular datasets for inclusion into open data portals. For this reason, it is recommended that the request include a line about placing the info into the open data portal. The hope is that these datasets become regularly updated in the portal without a FOIA prompt.
 
-This project uses Python running inside an AWS Lambda function.
+This project uses Python running inside an AWS Lambda function. Production settings are located in S3 while test settings are local.
 
 ## Project Details
 
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 ## Running
 
-Double check that TESTING by set to True before running locally
+Double check that TESTING by set to True before running locally. If TESTING is set to True, the script should fail because it lacks AWS credentials to fetch the S3 configs.
 
 ```
 python foiareq.py
@@ -76,7 +76,7 @@ There are three things we need to in order to deploy to AWS Lambda:
 2. Download the dependencies. Because Lambda is like its own virtual env, any third-party libraries must be included with the code
 
 ```
-pip2 download -r requirements.txt -d deployment/
+pip2 install -r requirements.txt -t deployment/
 ```
 
 3. Compress the deployment folder into a zip file
@@ -85,7 +85,7 @@ Once that is done, you upload the zip file to AWS Lambda and check that the dail
 
 ## Contributing
 
-It's possible to add new requests to requests.config.json without having to test the program yourself. Contact us and/or create issues with any questions or bugs.
+It's possible to add new requests to requests.config.json without having to test the program yourself. Contact us and/or create issues with any questions, bugs, or to add your request to the production version. 
 
 ## License
 

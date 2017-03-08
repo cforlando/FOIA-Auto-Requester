@@ -14,8 +14,12 @@ from requests import Session
 ORL_POST_URL = 'https://orlando.nextrequest.com/requests'
 CONFIG_PATH = 'requests.config.json'
 S3_KEY = 'requests.config.json'
+S3_BUCKET = 'cfo-configs'
 
 TESTING = True
+
+if not TESTING:
+    import boto3
 
 class FOIARequest:
     """Handles FOIA requests"""
@@ -72,7 +76,6 @@ def time_elapsed(freq: str, last: str) -> bool:
 
 def get_bucket(name: str) -> 'S3 Bucket':
     """Fetch an S3 Bucket object with a given name"""
-    import boto3
     bucket = boto3.resource('s3').Bucket(name)
     return bucket
 
@@ -81,7 +84,7 @@ def get_config() -> {str: object}:
     if not TESTING:
         global CONFIG_PATH
         CONFIG_PATH = '/tmp/' + CONFIG_PATH.split('/')[-1]
-        bucket = get_bucket('cfo-config')
+        bucket = get_bucket(S3_BUCKET)
         bucket.download_file(S3_KEY, CONFIG_PATH)
     return load(open(CONFIG_PATH))
 
@@ -89,8 +92,8 @@ def save_config(data: {str: object}):
     """Saves the updated config dict to local file or S3"""
     dump(data, open(CONFIG_PATH, 'w'), indent=4, sort_keys=True)
     if not TESTING:
-        bucket = get_bucket('cfo-config')
-        bucket.uploadload_file(CONFIG_PATH, S3_KEY)
+        bucket = get_bucket(S3_BUCKET)
+        bucket.upload_file(CONFIG_PATH, S3_KEY)
 
 def main(event, context):
     """Main function to load, handle, and update request data"""
