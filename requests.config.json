@@ -1,7 +1,7 @@
 [
     {
         "config": {
-            "enabled": true,
+            "enabled": false,
             "frequency": "4W",
             "last": "2017-01-28T22:26:39.987436"
         },
