@@ -87,7 +87,7 @@ You will also need to create an S3 Bucket to read the production config file fro
 
 ## Contributing
 
-It's possible to add new requests to requests.config.json without having to test the program yourself. Contact us and/or create issues with any questions, bugs, or to add your request to the production version. 
+It's possible to add new requests to requests.config.json without having to test the program yourself. Contact us and/or create issues with any questions, bugs, or to add your request to the production version. Use [this GitHub issue](https://github.com/cforlando/FOIA-Auto-Requester/issues/4) as an example.
 
 ## License
 
