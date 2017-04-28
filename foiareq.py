@@ -50,7 +50,7 @@ class FOIARequest:
     def add_config_data(self, pkey: str, values: dict):
         """Adds formatted key-value pairs to the data dict"""
         for key, val in values.items():
-            self.data['{}[{}]'.format(pkey, key)] = val.replace(' ', '+')
+            self.data[f'{pkey}[{key}]'] = val.replace(' ', '+')
 
     def make_request(self) -> bool:
         """returns whether it was made or not"""

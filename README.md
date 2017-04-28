@@ -11,7 +11,7 @@ Michael duPont (@mdupont)
 
 This project is supposed to automate FOIA (Freedom of Information Act) requests that occur on on a regular basis. In addition to simplifying the requester's job, it has the added benefit of surfacing particular datasets for inclusion into open data portals. For this reason, it is recommended that the request include a line about placing the info into the open data portal. The hope is that these datasets become regularly updated in the portal without a FOIA prompt.
 
-This project uses Python running inside an AWS Lambda function. Production settings are located in S3 while test settings are local.
+This project uses Python3.6+ running inside an AWS Lambda function. Production settings are located in S3 while test settings are local.
 
 ## Project Details
 
@@ -69,17 +69,15 @@ python foiareq.py
 
 ## Deployment
 
-There are three things we need to in order to deploy to AWS Lambda:
+There are two things we need to in order to deploy to AWS Lambda:
 
-1. Downgrade script from Python3 to Python2. In its current state, the only things needed are to remove function annotations and change `dict.items()` to `dict.iteritems()`
-
-2. Download the dependencies. Because Lambda is like its own virtual env, any third-party libraries must be included with the code
+1. Download the dependencies. Because Lambda is like its own virtual env, any third-party libraries must be included with the code
 
 ```
-pip2 install -r requirements.txt -t deployment/
+pip install -r requirements.txt -t .
 ```
 
-3. Compress the deployment folder into a zip file
+2. Compress foiareq.py and the dependencies into a zip file
 
 Once that is done, you upload the zip file to AWS Lambda and check that the daily trigger is still enabled.
 

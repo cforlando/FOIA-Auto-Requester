@@ -91,4 +91,4 @@ ENV/
 tags
 *.zip
 *.whl
-deployment/requests*
+requests*
